@@ -42,11 +42,39 @@ struct ground_truth {
  * Struct representing one landmark observation measurement.
  */
 struct LandmarkObs {
-  
+
   int id;     // Id of matching landmark in the map.
   double x;   // Local (vehicle coords) x position of landmark observation [m]
   double y;   // Local (vehicle coords) y position of landmark observation [m]
 };
+
+/**
+ * Computes the index of the minimum of an array
+ */
+inline int minIndex(std::vector<double> arr) {
+  int minIndex = 0;
+  double min = arr[0];
+  for (int i = 1; i < arr.size(); i++) {
+    if (arr[i] < min) {
+      min = arr[i];
+      minIndex = i;
+    }
+  }
+  return minIndex;
+}
+
+/**
+ * Computes the maximum of an array
+ */
+inline double maxElement(std::vector<double> arr) {
+  double max = arr[0];
+  for (int i = 1; i < arr.size(); i++) {
+    if (arr[i] > max) {
+      max = arr[i];
+    }
+  }
+  return max;
+}
 
 /**
  * Computes the Euclidean distance between two 2D points.
@@ -89,7 +117,7 @@ inline bool read_map_data(std::string filename, Map& map) {
   if (!in_file_map) {
     return false;
   }
-  
+
   // Declare single line of map file
   std::string line_map;
 
@@ -126,7 +154,7 @@ inline bool read_map_data(std::string filename, Map& map) {
  * @param filename Name of file containing control measurements.
  * @output True if opening and reading file was successful
  */
-inline bool read_control_data(std::string filename, 
+inline bool read_control_data(std::string filename,
                               std::vector<control_s>& position_meas) {
   // Get file of position measurements
   std::ifstream in_file_pos(filename.c_str(),std::ifstream::in);
@@ -152,7 +180,7 @@ inline bool read_control_data(std::string filename,
     //read data from line to values:
     iss_pos >> velocity;
     iss_pos >> yawrate;
-    
+
     // Set values
     meas.velocity = velocity;
     meas.yawrate = yawrate;
@@ -188,7 +216,7 @@ inline bool read_gt_data(std::string filename, std::vector<ground_truth>& gt) {
     double x, y, azimuth;
 
     // Declare single ground truth
-    ground_truth single_gt; 
+    ground_truth single_gt;
 
     //read data from line to values
     iss_pos >> x;
@@ -211,7 +239,7 @@ inline bool read_gt_data(std::string filename, std::vector<ground_truth>& gt) {
  * @param filename Name of file containing landmark observation measurements.
  * @output True if opening and reading file was successful
  */
-inline bool read_landmark_data(std::string filename, 
+inline bool read_landmark_data(std::string filename,
                                std::vector<LandmarkObs>& observations) {
   // Get file of landmark measurements
   std::ifstream in_file_obs(filename.c_str(),std::ifstream::in);
@@ -247,5 +275,24 @@ inline bool read_landmark_data(std::string filename,
   }
   return true;
 }
+
+inline double multiv_prob(double sig_x, double sig_y, double x_obs, double y_obs,
+                   double mu_x, double mu_y) {
+  // calculate normalization term
+  double gauss_norm;
+  gauss_norm = 1 / (2 * M_PI * sig_x * sig_y);
+
+  // calculate exponent
+  double exponent;
+  exponent = (pow(x_obs - mu_x, 2) / (2 * pow(sig_x, 2)))
+               + (pow(y_obs - mu_y, 2) / (2 * pow(sig_y, 2)));
+
+  // calculate weight using normalization terms and exponent
+  double weight;
+  weight = gauss_norm * exp(-exponent);
+
+  return weight;
+}
+
 
 #endif  // HELPER_FUNCTIONS_H_

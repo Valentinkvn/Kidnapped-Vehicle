@@ -1,6 +1,10 @@
 # Overview
 This repository contains all the code needed to complete the final project for the Localization course in Udacity's Self-Driving Car Nanodegree.
 
+<p align="center">
+  <img width="460" height="300" src="https://miro.medium.com/max/1735/1*VMTKYLh2c2cW7yE6mxFU7g.png">
+</p>
+
 The particle filter consists of four steps:
 - Initialization Step - initialize the particles based on the GPS measurements and gaussian noise.
 - Prediction Step - predicts the state for the next time step using the process model.

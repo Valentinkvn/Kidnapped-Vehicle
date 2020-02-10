@@ -1,8 +1,11 @@
 # Overview
 This repository contains all the code needed to complete the final project for the Localization course in Udacity's Self-Driving Car Nanodegree.
 
-Here is a very good visual explanation of Particle Filter. (Credits to @Andreas Svensson)
-[![Particle Filter](https://i.ytimg.com/vi/aUkBa1zMKv4/maxresdefault.jpg)](https://www.youtube.com/watch?v=aUkBa1zMKv4 "Particle Filter")
+The particle filter consists of four steps:
+- Initialization Step - initialize the particles based on the GPS measurements and gaussian noise.
+- Prediction Step - predicts the state for the next time step using the process model.
+- Update Step (Update Weights) - updates the weights for each particle based on the likelihood of the observed measurements.
+- Resample Step - Resamples from the updated set of particles to form the new set of particles.
 
 ## Project Introduction
 Your robot has been kidnapped and transported to a new location! Luckily it has a map of this location, a (noisy) GPS estimate of its initial location, and lots of (noisy) sensor and control data.
